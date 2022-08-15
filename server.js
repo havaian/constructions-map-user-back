@@ -20,7 +20,12 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// simple route
+app.get("/", (req, res) => {
+  res.json({ 
+    message: `It's working! 🙌`
+  });
+});
+
 app.get("/get-all-buildings", (req, res) => {
   controllers.findAllBuildings(req, res);
 });
