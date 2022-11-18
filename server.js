@@ -1,18 +1,34 @@
 const express = require("express");
+
 const bodyParser = require("body-parser");
+
 const cors = require("cors");
+
 const db = require("./app/models/index.js");
+
+const morgan = require("morgan");
+
+require("dotenv").config();
 
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
-const controllers = require('./app/controllers/building.controller');
+const buildingRoutes = require('./app/routes/building.routes');
+const objectRoutes = require('./app/routes/object.routes');
+const userRoutes = require('./app/routes/user.routes');
 
 const app = express();
 var corsOptions = {
-  origin: "https://construction-map.netlify.app/"
+  origin: process.env.front_end_url
 };
 app.use(cors(corsOptions));
+
+// set up route logger tools
+app.use(morgan('dev'));
+app.use((req, res, next) => {
+  console.log(`${Date(Date.now())}`);
+  next();
+})
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -20,35 +36,17 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// default for checking if api works
 app.get("/", (req, res) => {
   res.json({ 
     message: `It's working! 🙌`
   });
 });
 
-app.get("/get-all-buildings", (req, res) => {
-  controllers.findAllBuildings(req, res);
-});
- 
-app.get("/get-building/:id", (req, res) => {
-  controllers.findOneBuilding(req, res);
-});
-
-app.post('/add-building', (req, res) => {
-  controllers.addOneBuilding(req, res);
-});
-
-app.post("/update-building/:id", (req, res) => {
-  controllers.updateOneBuilding(req, res);
-});
-
-app.post("/delete-building/:id", (req, res) => {
-  controllers.deleteOneBuilding(req, res);
-});
-
-app.post("/delete-all-buildings", (req, res) => {
-  controllers.deleteAllBuildings(req, res);
-});
+// integrating all routes to the project
+app.use(buildingRoutes);
+app.use(objectRoutes);
+app.use(userRoutes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
