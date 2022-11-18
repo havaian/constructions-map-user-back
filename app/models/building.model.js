@@ -22,6 +22,5 @@ const buildingsSchema = new Schema({
 
 const Building = mongoose.model('Building', buildingsSchema);
 
-// export default Building;
-
+// export Building schema as a module;
 module.exports = Building;
