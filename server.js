@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./app/models/index.js");
 
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
@@ -10,7 +12,7 @@ const controllers = require('./app/controllers/building.controller');
 
 const app = express();
 var corsOptions = {
-  origin: "https://construction-map.netlify.app/"
+  origin: process.env.front_end_url
 };
 app.use(cors(corsOptions));
 
